@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
     private Camera mainCamera;
+    private ParticleSystem particle_muzzleFlash;
+    private AudioSource audio_HandgunFire;
 
     [Header("Camera variables")]
     public float cameraFollowSpeed = 0.1f;
@@ -26,6 +28,11 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         mainCamera = Camera.main;
+
+        particle_muzzleFlash = GetComponentInChildren<ParticleSystem>();
+        particle_muzzleFlash.Stop();
+
+        audio_HandgunFire = particle_muzzleFlash.gameObject.GetComponent<AudioSource>();
     }
 
 	// Update is called once per frame
@@ -98,11 +105,22 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookDir = hit.point - transform.position;
                 transform.LookAt(transform.position + lookDir, Vector3.up);
             }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot();
+            }
         }
         else
         {
             animator.SetBool("aiming", false);
         }
+    }
+
+    void Shoot()
+    {
+        particle_muzzleFlash.Play();
+        audio_HandgunFire.Play();
     }
 
     float Remap(float value, float from1, float to1, float from2, float to2)
